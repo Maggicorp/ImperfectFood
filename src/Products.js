@@ -1,11 +1,24 @@
 import React from 'react';
+import _ from 'lodash';
+
 import Product from './Product';
 import './Products.css';
 
-const Products = ({ products }) => {
+const filterByCategory = (categoryId, products) => {
+  if (categoryId === '0') return products.sort((a, b) => a.name < b.name ? -1 : 1);
+  const sortedProducts = products.filter((product) => {
+    const allIds = []
+    product.categories.forEach((category) => allIds.push(category.categoryId))
+    return allIds.includes(categoryId)
+  })
+  return sortedProducts.sort((a, b) => a.name < b.name ? -1 : 1);
+}
+
+const Products = ({ products, categoryId }) => {
+  const sortedProducts = filterByCategory(categoryId, products)
   return (
     <div className="Products-grid">
-      {products.map(product => <Product key={product.variantId} product={product} />)}
+      {sortedProducts.map(product => <Product key={product.variantId} product={product} />)}
     </div>
   );
 };
